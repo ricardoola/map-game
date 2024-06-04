@@ -1,9 +1,17 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ReactComponent as USMapSVG } from '../../data/us.svg'; // Replace with the path to your SVG file
 
 export const UsMap = ({ correctState, onStateClick }) => {
   const svgRef = useRef(null);
   const clickedStates = useRef(new Set()); // Use a Set to track clicked states
+
+  const [localCorrectState, setLocalCorrectState] = useState(correctState);
+  
+
+  useEffect(() => {
+    setLocalCorrectState(correctState);
+  }, [correctState]);
+
 
   const handleMouseOver = (event) => {
     if (!clickedStates.current.has(event.target.id)) {
@@ -14,10 +22,10 @@ export const UsMap = ({ correctState, onStateClick }) => {
   const handleClick = (event) => {
     const stateId = event.target.id;
     clickedStates.current.add(stateId); // Add to clicked states
-    if (stateId === correctState) {
+    if (stateId === localCorrectState) {
       event.target.style.fill = 'green'; // Color on correct guess
     } else {
-      // increase incorrect count here 
+      event.target.style.fill = '#f9f9f9';
     }
     onStateClick(stateId);
   };

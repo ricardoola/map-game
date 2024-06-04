@@ -6,6 +6,8 @@ const MapContainer = ({correctState, onStateClick}) => {
   const handleStateClick = (stateName) => {
     onStateClick(stateName);
   };
+  console.log('New state in MapContainer:', correctState);
+
   
   return (
     <div className='bg-container_blue'>

@@ -5,25 +5,24 @@ import Header from "../components/Header";
 import StateToGuess from "../components/StateToGuess";
 import { stateArray } from "../components/maps/UsMap";
 
-
-
 const GameScreen = () => {
+  let gameStateArray = stateArray;
 
-
-  
-  const [currentState, setCurrentState] = useState(stateArray[Math.floor(Math.random() * stateArray.length)]);
+  const [currentState, setCurrentState] = useState(
+    gameStateArray[Math.floor(Math.random() * gameStateArray.length)]
+  );
 
   console.log(currentState);
- 
 
   const handleStateClick = (state) => {
-   
-    if(state === currentState){
-      let stateArray = stateArray.filter((state) => state !== currentState)
-      setCurrentState(stateArray[Math.floor(Math.random() * stateArray.length)]);
+    if (state === currentState) {
+      gameStateArray = gameStateArray.filter((state) => state !== currentState);
+      const newState =
+        gameStateArray[Math.floor(Math.random() * gameStateArray.length)];
+      setCurrentState(newState);
     }
     console.log(state);
-  }
+  };
 
   return (
     <>
@@ -31,8 +30,12 @@ const GameScreen = () => {
       <div className="w-3/4 mx-auto flex flex-col justify-center mt-8">
         <StateToGuess />
         <div className="flex ">
-          <ScoreContainer className="rounded-md"/>
-          <MapContainer correctState={currentState} onStateClick={handleStateClick} />
+          {console.log(currentState)}
+          <ScoreContainer className="rounded-md" />
+          <MapContainer
+            correctState={currentState}
+            onStateClick={handleStateClick}
+          />
         </div>
       </div>
     </>
