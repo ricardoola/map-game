@@ -1,29 +1,21 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { ReactComponent as USMapSVG } from '../../data/us.svg'; // Replace with the path to your SVG file
+import React, { useEffect, useRef } from 'react';
+import { ReactComponent as USMapSVG } from '../../data/us.svg';
 
-export const UsMap = ({ correctState, onStateClick }) => {
+export const UsMap = ({ correctState, onStateClick, stateColors }) => {
   const svgRef = useRef(null);
-  const clickedStates = useRef(new Set()); // Use a Set to track clicked states
-
-  const [localCorrectState, setLocalCorrectState] = useState(correctState);
-  
-
-  useEffect(() => {
-    setLocalCorrectState(correctState);
-  }, [correctState]);
-
+  const clickedStates = useRef(new Set());
 
   const handleMouseOver = (event) => {
     if (!clickedStates.current.has(event.target.id)) {
-      event.target.style.fill = 'darkgray'; // Color on hover
+      event.target.style.fill = 'darkgray';
     }
   };
 
   const handleClick = (event) => {
     const stateId = event.target.id;
-    clickedStates.current.add(stateId); // Add to clicked states
-    if (stateId === localCorrectState) {
-      event.target.style.fill = 'green'; // Color on correct guess
+    if (stateId === correctState) {
+      clickedStates.current.add(stateId);
+      event.target.style.fill = 'green';
     } else {
       event.target.style.fill = '#f9f9f9';
     }
@@ -32,7 +24,7 @@ export const UsMap = ({ correctState, onStateClick }) => {
 
   const handleMouseOut = (event) => {
     if (!clickedStates.current.has(event.target.id)) {
-      event.target.style.fill = '#f9f9f9'; // Reset color if not clicked
+      event.target.style.fill = '#f9f9f9';
     }
   };
 
@@ -43,16 +35,22 @@ export const UsMap = ({ correctState, onStateClick }) => {
       path.addEventListener('mouseout', handleMouseOut);
       path.addEventListener('click', handleClick);
       path.style.strokeWidth = '0.97063118000000004';
+      const stateId = path.id;
+      if (stateColors[stateId]) {
+        path.style.fill = stateColors[stateId]; // Set fill color from stateColors
+      } else {
+        path.style.fill = '#f9f9f9'; // Default color
+      }
     });
 
-    return () => { // Cleanup event listeners
+    return () => {
       paths.forEach(path => {
         path.removeEventListener('mouseover', handleMouseOver);
         path.removeEventListener('mouseout', handleMouseOut);
         path.removeEventListener('click', handleClick);
       });
     };
-  }, []);
+  }, [correctState, stateColors]);
 
   return <USMapSVG ref={svgRef} />;
 };
