@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import ScoreContainer from "../containers/ScoreContainer";
 import MapContainer from "../containers/MapContainer";
@@ -7,34 +6,37 @@ import StateToGuess from "../components/StateToGuess";
 import { stateArray } from "../components/maps/UsMap";
 
 const GameScreen = () => {
-  let gameStateArray = stateArray;
-
+  const [gameStateArray, setGameStateArray] = useState(stateArray); // Manage gameStateArray in state
   const [currentState, setCurrentState] = useState(
     gameStateArray[Math.floor(Math.random() * gameStateArray.length)]
   );
   const [stateColors, setStateColors] = useState({});
-  console.log(currentState);
 
+  useEffect(() => {
+    if (gameStateArray.length > 0) {
+      setCurrentState(
+        gameStateArray[Math.floor(Math.random() * gameStateArray.length)]
+      );
+    }
+  }, [gameStateArray]);
 
   const handleStateClick = (state) => {
     if (state === currentState) {
-      gameStateArray = gameStateArray.filter((state) => state !== currentState);
-      const newState =
-        gameStateArray[Math.floor(Math.random() * gameStateArray.length)];
-      setCurrentState(newState);
-
+      setGameStateArray((prevState) =>
+        prevState.filter((state) => state !== currentState)
+      );
       setStateColors((prevState) => ({
         ...prevState,
         [state]: "green",
       }));
-    } 
+    }
   };
 
   return (
     <>
       <Header header="test" />
       <div className="w-3/4 mx-auto flex flex-col justify-center mt-8">
-        <StateToGuess />
+        <StateToGuess displayedState={currentState} />
         <div className="flex">
           <ScoreContainer className="rounded-md" />
           <MapContainer
@@ -49,4 +51,3 @@ const GameScreen = () => {
 };
 
 export default GameScreen;
-
